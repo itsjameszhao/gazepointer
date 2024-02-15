@@ -15,12 +15,12 @@ class DebuggingModule(GazePointerModule):
         return None
 
     def display_keypoints(self, keypoint_data: Data) -> None:
-        shape_np = keypoint_data.payload["shape_np"]
+        face_2d = keypoint_data.payload["face_2d"]
         frame = keypoint_data.payload["frame"]
         height, width = frame.shape[:2]
 
         # Overlay keypoints on the frame
-        for i, (x, y) in enumerate(shape_np):
+        for i, (x, y) in enumerate(face_2d):
             # Draw a circle at each point
             # Assuming you want to complete the color as green with full fill
             cv2.circle(frame, (int(x), int(y)), 3, (0, 255, 0), -1)

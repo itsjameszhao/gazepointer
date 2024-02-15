@@ -9,70 +9,36 @@ from gazepointer.gazepointer_module import GazePointerModule
 
 
 class PnPModule(GazePointerModule):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.model_points = np.array(
-            [
-                (0.0, 0.0, 0.0),
-                (0.0, -330.0, -65.0),
-                (-225.0, 170.0, -135.0),
-                (225.0, 170.0, -135.0),
-                (-150.0, -150.0, -125.0),
-                (150.0, -150.0, -125.0),
-            ]
-        )
-        self.dlib_indices = {
-            "NOSE_TIP": 33,
-            "CHIN": 8,
-            "LEFT_EYE_LEFT_CORNER": 45,
-            "RIGHT_EYE_RIGHT_CORNER": 36,
-            "LEFT_MOUTH_CORNER": 54,
-            "RIGHT_MOUTH_CORNER": 48,
-        }
-        self.frame_width = 1280  # Empirically determined
-        self.frame_height = 720  # Empirically determined
-        self.horizontal_fov_deg = 78  # Estimated value of most webcams
-        # Based on https://shorturl.at/kmqAX
-        self.focal_length = self.frame_width / (
-            2 * math.tan(self.horizontal_fov_deg / 2)
-        )  # Estimated value in pixels
-        # All values of the camera matrix expressed in pixels
-        self.camera_matrix = np.array(
-            [
-                [self.focal_length, 0, self.frame_width / 2],
-                [0, self.focal_length, self.frame_height / 2],
-                [0, 0, 1],
-            ],
-            dtype="double",
-        )
-        self.dist_coeffs = np.zeros((4, 1))
 
     def process_function(self, input_data: Optional[Data]) -> Optional[Data]:
+        face_2d = input_data.payload["face_2d"]
+        face_3d = input_data.payload["face_3d"]
+        img_w, img_h = input_data.payload["frame"].shape
 
-        # Check to see that the messages are correct
+        focal_length = 1 * img_w
 
-        if input_data:
-            assert (
-                input_data.header == "keypoints"
-            ), "Error: PnP module input data incorrect"
+        cam_matrix = np.array([[focal_length,0,img_h/2],
+                            [0,focal_length,img_w/2],
+                            [0,0,1]])
+        distortion_matrix = np.zeros((4,1),dtype=np.float64)
 
-            shape_np = input_data.payload["shape_np"]
-            image_points = np.array(
-                [shape_np[i] for i in self.dlib_indices.values()], dtype="double"
-            )
-            success, rotation_vector, translation_vector = cv2.solvePnP(
-                self.model_points,
-                image_points,
-                self.camera_matrix,
-                self.dist_coeffs,
-                flags=cv2.SOLVEPNP_ITERATIVE,
-            )
+        success,rotation_vec,translation_vec = cv2.solvePnP(face_3d,face_2d,cam_matrix,distortion_matrix)
+        
+        if success:
+            #getting rotational of face
+            rmat,jac = cv2.Rodrigues(rotation_vec)
 
-            if success:
-                print("Solve PnP success")
-                print(f"Rotation vector is {rotation_vector}")
-                print(f"Translation vector is {translation_vector}")
-            else:
-                print("Failed to solve PnP")
+            angles,mtxR,mtxQ,Qx,Qy,Qz = cv2.RQDecomp3x3(rmat)
 
+            x = angles[0] * 360
+            y = angles[1] * 360
+            z = angles[2] * 360
+
+            payload = {
+                "x_angle": x,
+                "y_angle": y,
+                "z_angle": z
+            }
+            return Data(header="pnp", payload=payload)
+        
         return None

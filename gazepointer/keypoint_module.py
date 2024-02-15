@@ -3,6 +3,7 @@ from typing import Optional
 import cv2
 import dlib
 import numpy as np
+import mediapipe as mp
 
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
@@ -13,38 +14,51 @@ class KeypointModule(GazePointerModule):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.detector = dlib.get_frontal_face_detector()
-        self.predictor = dlib.shape_predictor(
-            "../models/shape_predictor_68_face_landmarks.dat"
-        )
+
+        mp_face_mesh = mp.solutions.face_mesh
+        self.face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5,min_tracking_confidence=0.5)
+
         self.cap = cv2.VideoCapture(0)
 
     def process_function(self, input_data: Optional[Data]) -> Optional[Data]:
         # Capture frame-by--frame
-        ret, frame = self.cap.read()
+        success, image = self.cap.read()
+        image = cv2.cvtColor(cv2.flip(image,1),cv2.COLOR_BGR2RGB) #flipped for selfie view
 
-        if not ret:
-            print("Failed to grab frame")
+        image.flags.writeable = False
 
-        else:
-            # Convert the frame to  grayscale
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        results = self.face_mesh.process(image)
 
-            # Detect faces in the grayscale frame
-            faces = self.detector(gray, 0)
+        image.flags.writeable = True
 
-            if len(faces) > 0:
-                # Find the largest face based on the area of the rectangle
-                largest_face = max(faces, key=lambda rect: rect.width() * rect.height())
+        image = cv2.cvtColor(image,cv2.COLOR_RGB2BGR)
 
-                # Now we only analyze the largest face
-                shape = self.predictor(gray, largest_face)
-                shape_np = np.zeros((68, 2), dtype="int")
+        img_h , img_w, img_c = image.shape
+        face_2d = []
+        face_3d = []
 
-                for i in range(68):
-                    shape_np[i] = (shape.part(i).x, shape.part(i).y)
-                    payload = {"shape_np": shape_np, "frame": frame}
+        if results.multi_face_landmarks:
+            for face_landmarks in results.multi_face_landmarks:
+                for idx, lm in enumerate(face_landmarks.landmark):
+                    if idx == 33 or idx == 263 or idx ==1 or idx == 61 or idx == 291 or idx==199:
+                        if idx ==1:
+                            nose_2d = (lm.x * img_w,lm.y * img_h)
+                            nose_3d = (lm.x * img_w,lm.y * img_h,lm.z * 3000)
+                        x,y = int(lm.x * img_w),int(lm.y * img_h)
 
-                return Data(header="keypoints", payload=payload)
+                        face_2d.append([x,y])
+                        face_3d.append(([x,y,lm.z]))
+
+
+            face_2d = np.array(face_2d,dtype=np.float64)
+
+            face_3d = np.array(face_3d,dtype=np.float64)
+            
+            payload = {
+                "face_2d": face_2d,
+                "face_3d": face_3d,
+                "frame": image
+            }
+            return Data(header='keypoints', payload=payload)
 
         return None
