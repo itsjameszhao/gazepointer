@@ -27,8 +27,16 @@ class DebuggingModule(GazePointerModule):
 
             # Display the index 'i' near each point
             font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(frame, str(i), (int(x) + 5, int(y) - 5),
-                        font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-            
-        cv2.imshow('Video Feed', frame)
+            cv2.putText(
+                frame,
+                str(i),
+                (int(x) + 5, int(y) - 5),
+                font,
+                0.5,
+                (255, 255, 255),
+                1,
+                cv2.LINE_AA,
+            )
+
+        cv2.imshow("Video Feed", frame)
         cv2.waitKey(1)

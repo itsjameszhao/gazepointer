@@ -15,7 +15,7 @@ class QueueAggregator:
     ) -> None:
         self.input_queues: List[queue.Queue] = input_queues
         self.output_queue: queue.Queue = output_queue
-        self.threads : List[threading.Thread] = []
+        self.threads: List[threading.Thread] = []
 
     def start(self) -> None:
         """Starts the QueueAggregator, combining queues"""

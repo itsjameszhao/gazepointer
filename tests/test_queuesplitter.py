@@ -2,7 +2,7 @@ import queue
 import threading
 import unittest
 
-from gazepointer.data_message import Data, StopData
+from gazepointer.data_message import Data
 from gazepointer.multiplexing import QueueSplitter
 
 
@@ -52,10 +52,11 @@ class QueueSplitterTest(unittest.TestCase):
             for i in range(len(test_data)):
                 self.assertIs(output_queue.get(), test_data[i])
 
-         # Ensure that the thread has stopped
+        # Ensure that the thread has stopped
 
         for thread in self.splitter.threads:
             self.assertFalse(thread.is_alive())
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

@@ -13,9 +13,13 @@ class TestKeypointDisplay(unittest.TestCase):
         self.debug_module = DebuggingModule(input_queue=self.keypoint_queue)
 
     def test_display_keypoints(self):
-        self.keypoint_module.start()
-        self.debug_module.start(use_thread=False)
-
+        try:
+            self.keypoint_module.start()
+            self.debug_module.start(use_thread=False)
+        except KeyboardInterrupt:
+            print("Caught KeyboardInterrupt, exiting...")
+            self.debug_module.stop()
+            self.keypoint_module.stop()
 
 if __name__ == "__main__":
     unittest.main()

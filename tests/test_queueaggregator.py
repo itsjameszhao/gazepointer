@@ -2,7 +2,7 @@ import unittest
 from queue import Queue
 from unittest.mock import patch
 
-from gazepointer.data_message import Data, StopData
+from gazepointer.data_message import Data
 from gazepointer.multiplexing import QueueAggregator
 
 

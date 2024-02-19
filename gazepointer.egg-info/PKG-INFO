@@ -4,3 +4,4 @@ Version: 0.1.0
 Requires-Dist: numpy
 Requires-Dist: opencv-python
 Requires-Dist: dlib
+Requires-Dist: keyboard

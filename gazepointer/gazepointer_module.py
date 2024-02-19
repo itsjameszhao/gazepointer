@@ -50,11 +50,11 @@ class GazePointerModule(ABC):
     def start(self, use_thread=True) -> None:
         """Starts the data processing module in a separate thread"""
 
-        if use_thread: 
+        if use_thread:
             self.thread = threading.Thread(target=self._run)
             self.thread.start()
             print("Module started in a new thread.")
-        
+
         else:
             self._run()
 

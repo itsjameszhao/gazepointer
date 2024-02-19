@@ -1,5 +1,4 @@
 import queue
-import threading
 import unittest
 from typing import Optional
 from unittest.mock import MagicMock
