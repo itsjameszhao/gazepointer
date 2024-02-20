@@ -10,9 +10,11 @@ from gazepointer.gazepointer_module import GazePointerModule
 class PnPModule(GazePointerModule):
 
     def process_function(self, input_data: Optional[Data]) -> Optional[Data]:
+        if not input_data:
+            return None
         face_2d = input_data.payload["face_2d"]
         face_3d = input_data.payload["face_3d"]
-        img_w, img_h = input_data.payload["frame"].shape
+        img_w, img_h, img_c = input_data.payload["frame"].shape
 
         focal_length = 1 * img_w
 
@@ -36,6 +38,7 @@ class PnPModule(GazePointerModule):
             z = angles[2] * 360
 
             payload = {"x_angle": x, "y_angle": y, "z_angle": z}
+            print(payload)
             return Data(header="pnp", payload=payload)
 
         return None

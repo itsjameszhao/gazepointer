@@ -13,7 +13,7 @@ from gazepointer.gazepointer_module import GazePointerModule
 class KeypointModule(GazePointerModule):
     """Module to output the 68 Dlib keypoints"""
 
-    def __init__(self, toggle_key="ctrl", *args, **kwargs):
+    def __init__(self, toggle_key="space", *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         mp_face_mesh = mp.solutions.face_mesh
