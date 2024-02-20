@@ -1,7 +1,18 @@
 import numpy as np
 import cv2
 import mediapipe as mp
+import pyautogui
 import time
+
+def map_yaw_pitch_to_xy(yaw_pitch_bounds, xy_bounds, yaw, pitch):
+    yaw_left, yaw_right, pitch_down, pitch_up = yaw_pitch_bounds
+    x_min, x_max, y_min, y_max = xy_bounds
+    
+    # Interpolate yaw to x
+    x  = ((yaw - yaw_left) / (yaw_right - yaw_left)) * (x_max - x_min) + x_min 
+    y = ((pitch - pitch_down) / (pitch_up - pitch_down)) * (y_max - y_min) + y_min
+    
+    return x, y
 
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5,min_tracking_confidence=0.5)
@@ -66,6 +77,14 @@ while cap.isOpened():
         x = angles[0] * 360
         y = angles[1] * 360 - 10 # Buggy correction
         z = angles[2] * 360
+
+        x_pix, y_pix = map_yaw_pitch_to_xy(
+            [-6, 6, -1, 6],
+            [0, 1920, 1080, 0],
+            y,
+            x
+        )
+        # pyautogui.moveTo(x_pix, y_pix, duration=0.25)
 
         #here based on axis rot angle is calculated
         if y < -10:
