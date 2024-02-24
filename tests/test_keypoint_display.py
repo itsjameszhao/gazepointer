@@ -21,5 +21,6 @@ class TestKeypointDisplay(unittest.TestCase):
             self.debug_module.stop()
             self.keypoint_module.stop()
 
+
 if __name__ == "__main__":
     unittest.main()

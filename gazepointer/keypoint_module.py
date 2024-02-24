@@ -1,11 +1,11 @@
 import time
-from config import FRAME_RATE
 from typing import Optional
 
 import cv2
 import keyboard
 import mediapipe as mp
 import numpy as np
+from config import FRAME_RATE
 
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
