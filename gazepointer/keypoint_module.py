@@ -1,4 +1,5 @@
 import time
+from config import FRAME_RATE
 from typing import Optional
 
 import cv2
@@ -22,6 +23,7 @@ class KeypointModule(GazePointerModule):
         )
         self.toggle_key = toggle_key
         self.cap = cv2.VideoCapture(0)
+        self.cap.set(cv2.CAP_PROP_FPS, FRAME_RATE)
 
     def process_function(self, input_data: Optional[Data]) -> Optional[Data]:
 
