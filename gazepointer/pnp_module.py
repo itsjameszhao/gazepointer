@@ -37,8 +37,20 @@ class PnPModule(GazePointerModule):
             y = angles[1] * 360
             z = angles[2] * 360
 
-            payload = {"x_angle": x, "y_angle": y, "z_angle": z}
+            # Hard-coded values for now
+            x_dist = 0.0
+            y_dist = 0.0
+            z_dist = 0.5  # in meters
+            payload = {
+                "x_angle": x,
+                "y_angle": y,
+                "z_angle": z,
+                "x_dist": x_dist,
+                "y_dist": y_dist,
+                "z_dist": z_dist,
+            }
             print(payload)
+
             return Data(header="pnp", payload=payload)
 
         return None

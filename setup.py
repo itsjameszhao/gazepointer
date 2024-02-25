@@ -7,7 +7,7 @@ setup(
     install_requires=[
         "numpy",
         "opencv-python==4.9.0.80",
-        "dlib",
+        "filterpy",
         "keyboard",
         "mediapipe",
     ],
