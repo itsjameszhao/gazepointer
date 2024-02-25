@@ -5,8 +5,8 @@ import cv2
 import keyboard
 import mediapipe as mp
 import numpy as np
-from config import FRAME_RATE
 
+from gazepointer.config import FRAME_RATE
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
 
@@ -28,6 +28,7 @@ class KeypointModule(GazePointerModule):
     def process_function(self, input_data: Optional[Data]) -> Optional[Data]:
 
         # Check whether the Caps Lock key is pressed
+
         if keyboard.is_pressed(self.toggle_key):
             # Capture frame-by--frame
             success, image = self.cap.read()
@@ -71,6 +72,7 @@ class KeypointModule(GazePointerModule):
                 face_3d = np.array(face_3d, dtype=np.float64)
 
                 payload = {"face_2d": face_2d, "face_3d": face_3d, "frame": image}
+
                 return Data(header="keypoints", payload=payload)
         else:
             time.sleep(0.05)
