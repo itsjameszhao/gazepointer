@@ -2,6 +2,7 @@ from typing import Optional
 
 import cv2
 import numpy as np
+import time
 
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
@@ -9,6 +10,10 @@ from gazepointer.gazepointer_module import GazePointerModule
 
 class PnPModule(GazePointerModule):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.last_time = time.time()
+        
     def process_function(self, input_data: Optional[Data]) -> Optional[Data]:
         if not input_data:
             return None
@@ -33,12 +38,26 @@ class PnPModule(GazePointerModule):
 
             angles, mtxR, mtxQ, Qx, Qy, Qz = cv2.RQDecomp3x3(rmat)
 
-            x = angles[0] * 360
-            y = angles[1] * 360
-            z = angles[2] * 360
+            x_angle = angles[0] * 360
+            y_angle = -1 * angles[1] * 360
+            z_angle = angles[2] * 360
+            x_disp = 0  # TODO hard-coded for now, change later
+            y_disp = 0  # TODO hard-coded for now, change later
+            z_disp = 0.5  # TODO hard-coded for now, change later
 
-            payload = {"x_angle": x, "y_angle": y, "z_angle": z}
-            print(payload)
+            payload = {
+                "x_angle": x_angle,
+                "y_angle": y_angle,
+                "z_angle": z_angle,
+                "x_disp": x_disp,
+                "y_disp": y_disp,
+                "z_disp": z_disp,
+            }
+            FPS = 1 / (time.time() - self.last_time)
+            if FPS == 0:
+                FPS = -1
+            print(f"Angles: x: {x_angle} y: {y_angle} z: {z_angle} || Displacements: x: {x_disp} y: {y_disp} z: {z_disp} || FPS: {FPS}", end='\r')
+            self.last_time = time.time()
             return Data(header="pnp", payload=payload)
 
         return None

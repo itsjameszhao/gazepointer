@@ -22,10 +22,16 @@ class TestPnP(unittest.TestCase):
         self.pnp_module = PnPModule(input_queue=self.pnp_input_queue)
 
     def test_display_keypoints(self):
-        self.pnp_module.start()
-        self.keypoint_module.start()
-        self.keypoint_output_splitter.start()
-        self.debug_module.start(use_thread=False)
+        try:
+            self.pnp_module.start()
+            self.keypoint_module.start()
+            self.keypoint_output_splitter.start()
+            self.debug_module.start(use_thread=False)
+        except KeyboardInterrupt:
+            self.debug_module.stop()
+            self.keypoint_output_splitter.stop()
+            self.keypoint_module.stop()
+            self.pnp_module.stop()
 
 
 if __name__ == "__main__":
