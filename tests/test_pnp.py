@@ -38,7 +38,7 @@ class TestPnP(unittest.TestCase):
             self.debug_module.start(use_thread=False)
         except KeyboardInterrupt:
             self.debug_module.stop()
-            self.debug_module_aggregator.stop()
+            self.debug_input_aggregator.stop()
             self.keypoint_output_splitter.stop()
             self.keypoint_module.stop()
             self.pnp_module.stop()

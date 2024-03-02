@@ -1,4 +1,5 @@
 import os
+import time
 from typing import Optional
 
 import cv2
@@ -29,32 +30,43 @@ class DebuggingModule(GazePointerModule):
             self.debugging_template += "\n" + keypoint_str
             self.display_keypoints(input_data)
 
-        elif self.input_data.header == "pnp":
-            angle_x = self.input_data.payload["angle_x"]
-            angle_y = self.input_data.payload["angle_y"]
-            angle_z = self.input_data.payload["angle_z"]
-            disp_x = self.input_data.payload["disp_x"]
-            disp_y = self.input_data.payload["disp_y"]
-            disp_z = self.input_data.payload["disp_z"]
-            pnp_str = f"Angles: x:
+        elif input_data.header == "pnp":
+            angle_x = input_data.payload["angle_x"]
+            angle_y = input_data.payload["angle_y"]
+            angle_z = input_data.payload["angle_z"]
+            disp_x = input_data.payload["disp_x"]
+            disp_y = input_data.payload["disp_y"]
+            disp_z = input_data.payload["disp_z"]
+            pnp_str = f"Raw angles: x: {angle_x}, y: {angle_y}, z: {angle_z} displacements: x: {disp_x}, y: {disp_y}, z: {disp_z}"
+            self.debugging_template += "\n" + pnp_str
 
-        elif self.input_data.header == "kalman":
-            pass
+        elif input_data.header == "kalman":
+            angle_x = input_data.payload["angle_x"]
+            angle_y = input_data.payload["angle_y"]
+            angle_z = input_data.payload["angle_z"]
+            disp_x = input_data.payload["disp_x"]
+            disp_y = input_data.payload["disp_y"]
+            disp_z = input_data.payload["disp_z"]
+            kalman_str = f"Filtered angles: x: {angle_x}, y: {angle_y}, z: {angle_z} displacements: x: {disp_x}, y: {disp_y}, z: {disp_z}"
+            self.debugging_template += "\n" + kalman_str
 
         elif self.input_data.header == "projection":
-            pass
+            x_px = input_data.payload["x_px"]
+            y_px = input_data.payload["y_px"]
+            projection_str = f"Projection: x: {x_px}, y: {y_px}"
+            self.debugging_template += "\n" + projection_str
+            self.display_point(x_px, y_px)
 
         elif self.input_data.header == "screen":
-            pass
+            pass  # TODO
 
         elif self.input_data.header == "control":
-            pass
-
-        # If sufficient time has passed, print the debugging template
+            pass  # TODO
 
         if time.time() - self.last_print_time > self.print_interval:
             self.last_print_time = time.time()
             os.system("clear")
+            self.sort_debugging_template()
             print(self.debugging_template)
             self.debugging_template = ""
 
@@ -62,11 +74,12 @@ class DebuggingModule(GazePointerModule):
 
     def sort_debugging_template(self):
         # Split the string into a list of lines
-        lines = self.debugging_template.split('\n')
+        lines = self.debugging_template.split("\n")
         # Sort the list
         lines.sort()
         # Join the list back into a string
-        self.debugging_template = '\n'.join(lines)
+        self.debugging_template = "\n".join(lines)
+
     def display_keypoints(self, keypoint_data: Data) -> None:
         face_2d = keypoint_data.payload["face_2d"]
         frame = keypoint_data.payload["frame"]
@@ -94,3 +107,6 @@ class DebuggingModule(GazePointerModule):
 
         cv2.imshow("Video Feed", frame)
         cv2.waitKey(1)
+
+    def display_point(self, x_px: int, y_px: int) -> None:
+        """Display the gaze point on the screen"""
