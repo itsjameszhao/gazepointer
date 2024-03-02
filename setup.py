@@ -10,5 +10,8 @@ setup(
         "filterpy",
         "keyboard",
         "mediapipe",
+        "screeninfo",
+        "pyautogui",
+        "pygame",
     ],
 )

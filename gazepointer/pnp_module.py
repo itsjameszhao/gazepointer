@@ -1,3 +1,4 @@
+import time
 from typing import Optional
 
 import cv2
@@ -8,6 +9,10 @@ from gazepointer.gazepointer_module import GazePointerModule
 
 
 class PnPModule(GazePointerModule):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.last_time = time.time()
 
     def process_function(self, input_data: Optional[Data]) -> Optional[Data]:
         if not input_data:
@@ -32,24 +37,22 @@ class PnPModule(GazePointerModule):
             rmat, jac = cv2.Rodrigues(rotation_vec)
 
             angles, mtxR, mtxQ, Qx, Qy, Qz = cv2.RQDecomp3x3(rmat)
+            # See doc/coords.jpg for coordinate system
+            angle_x = angles[0] * 360 / 180 * np.pi  # convert to radians
+            angle_y = -1 * angles[1] * 360 / 180 * np.pi  # convert to radians
+            angle_z = angles[2] * 360 / 180 * np.pi  # convert to radians
+            disp_x = 0  # TODO hard-coded for now, change later
+            disp_y = 0  # TODO hard-coded for now, change later
+            disp_z = 0.5  # TODO hard-coded for now, change later
 
-            x = angles[0] * 360
-            y = angles[1] * 360
-            z = angles[2] * 360
-
-            # Hard-coded values for now
-            x_dist = 0.0
-            y_dist = 0.0
-            z_dist = 0.5  # in meters
             payload = {
-                "x_angle": x,
-                "y_angle": y,
-                "z_angle": z,
-                "x_dist": x_dist,
-                "y_dist": y_dist,
-                "z_dist": z_dist,
+                "angle_x": angle_x,
+                "angle_y": angle_y,
+                "angle_z": angle_z,
+                "disp_x": disp_x,
+                "disp_y": disp_y,
+                "disp_z": disp_z,
             }
-            print(payload)
 
             return Data(header="pnp", payload=payload)
 

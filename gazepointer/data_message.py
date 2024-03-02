@@ -24,7 +24,7 @@ class Data:
         return self._header
 
     @header.setter
-    def hedaer(self, value: str) -> None:
+    def header(self, value: str) -> None:
         self._header = value
 
     @property
