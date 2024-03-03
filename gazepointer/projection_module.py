@@ -4,9 +4,9 @@ from typing import Optional
 
 import numpy as np
 
-from config import (CAMERA_HEIGHT_ABOVE_SCREEN_METERS,
-                    SCREEN_DIAGONAL_SIZE_METERS, SCREEN_HEIGHT_PX,
-                    SCREEN_WIDTH_PX)
+from gazepointer.config import (CAMERA_HEIGHT_ABOVE_SCREEN_METERS,
+                                SCREEN_DIAGONAL_SIZE_METERS, SCREEN_HEIGHT_PX,
+                                SCREEN_WIDTH_PX)
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
 
