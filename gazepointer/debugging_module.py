@@ -4,6 +4,7 @@ from typing import Optional
 
 import cv2
 
+from gazepointer.config import PRINT_INTERVAL
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
 
@@ -11,12 +12,18 @@ from gazepointer.gazepointer_module import GazePointerModule
 class DebuggingModule(GazePointerModule):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.pnp_str = ""
+        self.kalman_str = ""
+        self.keypoint_str = ""
+        self.projection_str = ""
+        self.screen_str = ""
+        self.control_str = ""
 
         # Controls the frequency of print statements
         self.last_print_time = time.time()
 
         # Specify how frquently to print in seconds
-        self.print_interval = 0.5
+        self.print_interval = PRINT_INTERVAL
 
         # Template for debugging
         self.debugging_template = ""
@@ -26,8 +33,7 @@ class DebuggingModule(GazePointerModule):
             return None
 
         if input_data.header == "keypoint":
-            keypoint_str = f"Keypoint shape: {input_data.payload['face_2d'].shape}"
-            self.debugging_template += "\n" + keypoint_str
+            self.keypoint_str = f"Keypoint shape: {input_data.payload['face_2d'].shape}"
             self.display_keypoints(input_data)
 
         elif input_data.header == "pnp":
@@ -37,8 +43,7 @@ class DebuggingModule(GazePointerModule):
             disp_x = input_data.payload["disp_x"]
             disp_y = input_data.payload["disp_y"]
             disp_z = input_data.payload["disp_z"]
-            pnp_str = f"Raw angles: x: {angle_x}, y: {angle_y}, z: {angle_z} displacements: x: {disp_x}, y: {disp_y}, z: {disp_z}"
-            self.debugging_template += "\n" + pnp_str
+            self.pnp_str = f"Raw angles: x: {angle_x}, y: {angle_y}, z: {angle_z} displacements: x: {disp_x}, y: {disp_y}, z: {disp_z}"
 
         elif input_data.header == "kalman":
             angle_x = input_data.payload["angle_x"]
@@ -47,25 +52,37 @@ class DebuggingModule(GazePointerModule):
             disp_x = input_data.payload["disp_x"]
             disp_y = input_data.payload["disp_y"]
             disp_z = input_data.payload["disp_z"]
-            kalman_str = f"Filtered angles: x: {angle_x}, y: {angle_y}, z: {angle_z} displacements: x: {disp_x}, y: {disp_y}, z: {disp_z}"
-            self.debugging_template += "\n" + kalman_str
+            self.kalman_str = f"Filtered angles: x: {angle_x}, y: {angle_y}, z: {angle_z} displacements: x: {disp_x}, y: {disp_y}, z: {disp_z}"
 
-        elif self.input_data.header == "projection":
+        elif input_data.header == "projection":
             x_px = input_data.payload["x_px"]
             y_px = input_data.payload["y_px"]
-            projection_str = f"Projection: x: {x_px}, y: {y_px}"
-            self.debugging_template += "\n" + projection_str
+            x_m = input_data.payload["x_m"]
+            y_m = input_data.payload["y_m"]
+            self.projection_str = (
+                f"Physical: x: {x_m} y: {y_m} Projection: x: {x_px}, y: {y_px}"
+            )
             self.display_point(x_px, y_px)
 
-        elif self.input_data.header == "screen":
+        elif input_data.header == "screen":
             pass  # TODO
 
-        elif self.input_data.header == "control":
+        elif input_data.header == "control":
             pass  # TODO
 
         if time.time() - self.last_print_time > self.print_interval:
             self.last_print_time = time.time()
             os.system("clear")
+            self.debugging_template = "\n".join(
+                [
+                    self.keypoint_str,
+                    self.pnp_str,
+                    self.kalman_str,
+                    self.projection_str,
+                    self.screen_str,
+                    self.control_str,
+                ]
+            )
             self.sort_debugging_template()
             print(self.debugging_template)
             self.debugging_template = ""

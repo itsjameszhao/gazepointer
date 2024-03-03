@@ -28,7 +28,6 @@ class GazePointerModule(ABC):
 
     def _run(self) -> None:
         """The original start logic that runs in a separate thread"""
-        print("Starting module...")
 
         while not self.stop_event.is_set():
             try:
@@ -49,7 +48,7 @@ class GazePointerModule(ABC):
 
     def start(self, use_thread=True) -> None:
         """Starts the data processing module in a separate thread"""
-
+        print("Starting module...")
         if use_thread:
             self.thread = threading.Thread(target=self._run)
             self.thread.start()
@@ -57,6 +56,7 @@ class GazePointerModule(ABC):
 
         else:
             self._run()
+            print("Module started in the main thread.")
 
     def stop(self) -> None:
         """Stop the data processing module"""
@@ -65,3 +65,4 @@ class GazePointerModule(ABC):
 
         if self.thread:
             self.thread.join()  # Wait for the thread to finish
+        print("Module stopped.")

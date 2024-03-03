@@ -1,8 +1,9 @@
 import queue
 import unittest
 
-from gazepointer.screen_module import ScreenModule
 from gazepointer.data_message import Data
+from gazepointer.screen_module import ScreenModule
+
 
 class TestKeypointDisplay(unittest.TestCase):
 

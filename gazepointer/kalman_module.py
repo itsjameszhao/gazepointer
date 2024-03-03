@@ -1,15 +1,16 @@
 from copy import copy
 from typing import Optional
 
+from gazepointer.config import ALPHA
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
 
 
-class FilterModule(GazePointerModule):
+class KalmanModule(GazePointerModule):
 
-    def __init__(self, alpha, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.alpha = alpha
+        self.alpha = ALPHA
         self.smooth_angle_x = 0
         self.smooth_angle_y = 0
         self.smooth_angle_z = 0
@@ -18,6 +19,9 @@ class FilterModule(GazePointerModule):
         self.smooth_disp_z = 0
 
     def process_function(self, input_data: Optional[Data]) -> Optional[Data]:
+        if not input_data or input_data.header != "pnp":
+            return None
+
         angle_x = input_data.payload["angle_x"]
         angle_y = input_data.payload["angle_y"]
         angle_z = input_data.payload["angle_z"]
@@ -46,5 +50,4 @@ class FilterModule(GazePointerModule):
             "disp_y": copy(self.smooth_disp_y),
             "disp_z": copy(self.smooth_disp_z),
         }
-
-        return Data(header="filter", payload=payload)
+        return Data(header="kalman", payload=payload)

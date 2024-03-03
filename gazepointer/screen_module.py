@@ -31,14 +31,15 @@
 # Send those coordinates to screen module with time delay
 # Verify that it works and can click
 
+import asyncio
 from typing import Optional
+
+import pyautogui
 
 from gazepointer.config import FRAME_RATE
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
 
-import asyncio
-import pyautogui
 
 class ScreenModule(GazePointerModule):
 
@@ -49,7 +50,7 @@ class ScreenModule(GazePointerModule):
         pyautogui.click()
 
     async def async_move_mouse(self, x, y):
-        pyautogui.moveTo(x, y, 1/FRAME_RATE)
+        pyautogui.moveTo(x, y, 1 / FRAME_RATE)
 
     def process_function(self, input_data: Optional[Data]) -> Optional[Data]:
         if (

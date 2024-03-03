@@ -19,11 +19,12 @@ class QueueAggregator:
 
     def start(self) -> None:
         """Starts the QueueAggregator, combining queues"""
-
+        print("Starting QueueAggregator...")
         for input_queue in self.input_queues:
             thread = threading.Thread(target=self.aggregate, args=(input_queue,))
             thread.start()
             self.threads.append(thread)
+        print("QueueAggregator started.")
 
     def aggregate(self, input_queue: queue.Queue) -> None:
         """Aggregates data from multiple queues together"""
@@ -40,12 +41,13 @@ class QueueAggregator:
 
     def stop(self) -> None:
         """Stops the operation of the QueueAggregator"""
-
+        print("Stopping QueueAggregator...")
         for input_queue in self.input_queues:
             input_queue.put(StopData(), block=True)
 
         for thread in self.threads:
             thread.join()
+        print("QueueAggregator stopped.")
 
 
 class QueueSplitter:
@@ -60,9 +62,11 @@ class QueueSplitter:
 
     def start(self) -> None:
         """Starts the QueueSplitter, multiplexing queues"""
+        print("Starting QueueSplitter...")
         thread = threading.Thread(target=self.split)
         thread.start()
         self.threads.append(thread)
+        print("QueueSplitter started.")
 
     def split(self) -> None:
         """Splits data from one queue into multiple"""
@@ -81,7 +85,9 @@ class QueueSplitter:
 
     def stop(self) -> None:
         """Stops the operation of the QueueSplitter"""
+        print("Stopping QueueSplitter...")
         self.input_queue.put(StopData(), block=True)
 
         for thread in self.threads:
             thread.join()
+        print("QueueSplitter stopped.")

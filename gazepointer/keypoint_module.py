@@ -51,21 +51,11 @@ class KeypointModule(GazePointerModule):
             if results.multi_face_landmarks:
                 for face_landmarks in results.multi_face_landmarks:
                     for idx, lm in enumerate(face_landmarks.landmark):
-                        if (
-                            idx == 33
-                            or idx == 263
-                            or idx == 1
-                            or idx == 61
-                            or idx == 291
-                            or idx == 199
-                        ):
-                            if idx == 1:
-                                (lm.x * img_w, lm.y * img_h)
-                                (lm.x * img_w, lm.y * img_h, lm.z * 3000)
-                            x, y = int(lm.x * img_w), int(lm.y * img_h)
 
-                            face_2d.append([x, y])
-                            face_3d.append(([x, y, lm.z]))
+                        x, y = int(lm.x * img_w), int(lm.y * img_h)
+
+                        face_2d.append([x, y])
+                        face_3d.append(([x, y, lm.z]))
 
                 face_2d = np.array(face_2d, dtype=np.float64)
 
@@ -73,7 +63,7 @@ class KeypointModule(GazePointerModule):
 
                 payload = {"face_2d": face_2d, "face_3d": face_3d, "frame": image}
 
-                return Data(header="keypoints", payload=payload)
+                return Data(header="keypoint", payload=payload)
         else:
             time.sleep(0.05)
 

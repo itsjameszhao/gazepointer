@@ -15,7 +15,7 @@ class PnPModule(GazePointerModule):
         self.last_time = time.time()
 
     def process_function(self, input_data: Optional[Data]) -> Optional[Data]:
-        if not input_data:
+        if not input_data or input_data.header != "keypoint":
             return None
         face_2d = input_data.payload["face_2d"]
         face_3d = input_data.payload["face_3d"]
