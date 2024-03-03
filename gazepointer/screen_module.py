@@ -33,14 +33,23 @@
 
 from typing import Optional
 
+from gazepointer.config import FRAME_RATE
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
 
+import asyncio
+import pyautogui
 
 class ScreenModule(GazePointerModule):
 
-    def __init__(self, alpha, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+
+    async def async_click(self):
+        pyautogui.click()
+
+    async def async_move_mouse(self, x, y):
+        pyautogui.moveTo(x, y, 1/FRAME_RATE)
 
     def process_function(self, input_data: Optional[Data]) -> Optional[Data]:
         if (
@@ -49,9 +58,12 @@ class ScreenModule(GazePointerModule):
             or input_data.payload is None
         ):
             return None
-        if input_data["header"] == "mouse":
-            pass  # TODO process mouse
-        if input_data["header"] == "screen":
-            pass  # TODO process screen
+        if input_data.header == "mouse":
+            payload = input_data.payload
+            if payload == "click":
+                asyncio.run(self.async_click())
+        if input_data.header == "screen":
+            x, y = input_data.payload
+            asyncio.run(self.async_move_mouse(x, y))
 
         return None
