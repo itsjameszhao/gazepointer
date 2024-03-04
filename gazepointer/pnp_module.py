@@ -4,6 +4,7 @@ from typing import Optional
 import cv2
 import numpy as np
 
+from gazepointer.config import X_ANGLE_BIAS, X_ANGLE_GAIN, Y_ANGLE_BIAS, Y_ANGLE_GAIN
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
 
@@ -38,8 +39,12 @@ class PnPModule(GazePointerModule):
 
             angles, mtxR, mtxQ, Qx, Qy, Qz = cv2.RQDecomp3x3(rmat)
             # See doc/coords.jpg for coordinate system
-            angle_x = angles[0] * 360 / 180 * np.pi  # convert to radians
-            angle_y = -1 * angles[1] * 360 / 180 * np.pi  # convert to radians
+            angle_x = X_ANGLE_GAIN * (
+                angles[0] * 360 / 180 * np.pi + X_ANGLE_BIAS
+            )  # convert to radians
+            angle_y = Y_ANGLE_GAIN * (
+                -1 * angles[1] * 360 / 180 * np.pi + Y_ANGLE_BIAS
+            )  # convert to radians
             angle_z = angles[2] * 360 / 180 * np.pi  # convert to radians
             disp_x = 0  # TODO hard-coded for now, change later
             disp_y = 0  # TODO hard-coded for now, change later

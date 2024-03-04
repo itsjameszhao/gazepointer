@@ -12,6 +12,6 @@ setup(
         "mediapipe",
         "screeninfo",
         "pyautogui",
-        "pygame",
+        "mouse",
     ],
 )

@@ -20,9 +20,12 @@ gazepointer.egg-info/requires.txt
 gazepointer.egg-info/top_level.txt
 tests/__init__.py
 tests/misc.py
+tests/test_gazepointer_complete.py
 tests/test_gazepointer_module.py
+tests/test_kalman.py
 tests/test_keypoint_display.py
 tests/test_pnp.py
+tests/test_projection.py
 tests/test_queueaggregator.py
 tests/test_queuesplitter.py
 tests/test_screen_module.py

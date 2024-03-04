@@ -2,7 +2,7 @@ import queue
 import unittest
 
 from gazepointer.debugging_module import DebuggingModule
-from gazepointer.kalman_module import KalmanModule
+from gazepointer.kalman_module import Kalman3DModule
 from gazepointer.keypoint_module import KeypointModule
 from gazepointer.multiplexing import QueueAggregator, QueueSplitter
 from gazepointer.pnp_module import PnPModule
@@ -50,7 +50,7 @@ class TestPnP(unittest.TestCase):
             input_queue=self.kalman_output_queue,
             output_queues=[self.kalman_intermediate_queue, self.projection_input_queue],
         )
-        self.kalman_module = KalmanModule(
+        self.kalman_module = Kalman3DModule(
             input_queue=self.kalman_input_queue, output_queue=self.kalman_output_queue
         )
 

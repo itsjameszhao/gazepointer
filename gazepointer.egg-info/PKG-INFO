@@ -1,10 +1,11 @@
 Metadata-Version: 2.1
 Name: gazepointer
 Version: 0.1.0
-Summary: UNKNOWN
-Home-page: UNKNOWN
-License: UNKNOWN
-Platform: UNKNOWN
-
-UNKNOWN
-
+Requires-Dist: numpy
+Requires-Dist: opencv-python==4.9.0.80
+Requires-Dist: filterpy
+Requires-Dist: keyboard
+Requires-Dist: mediapipe
+Requires-Dist: screeninfo
+Requires-Dist: pyautogui
+Requires-Dist: mouse

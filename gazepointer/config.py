@@ -1,3 +1,5 @@
+import math
+
 import screeninfo
 
 """This module contains the configuration for the application."""
@@ -8,7 +10,14 @@ FRAME_RATE = (
 
 # Controls the smoothing factor of the Exponential Moving Average filter.
 # The lower the value, the more smoothing is applied.
-ALPHA = 0.5
+ALPHA = 0.3
+
+# Angle Bias, for offsetting viewing angle. In radians.
+# This is a temporary fix TODO
+X_ANGLE_BIAS = -10 / 180 * math.pi
+Y_ANGLE_BIAS = 0 / 180 * math.pi
+X_ANGLE_GAIN = 2.5  # Gain for the angle
+Y_ANGLE_GAIN = 1.5
 
 # Screen parameters
 CAMERA_HEIGHT_ABOVE_SCREEN_METERS = float(

@@ -1,8 +1,8 @@
+numpy
+opencv-python==4.9.0.80
 filterpy
 keyboard
 mediapipe
-numpy
-opencv-python==4.9.0.80
-pyautogui
-pygame
 screeninfo
+pyautogui
+mouse

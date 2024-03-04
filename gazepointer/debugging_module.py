@@ -3,8 +3,9 @@ import time
 from typing import Optional
 
 import cv2
+import mouse
 
-from gazepointer.config import PRINT_INTERVAL
+from gazepointer.config import PRINT_INTERVAL, SCREEN_HEIGHT_PX, SCREEN_WIDTH_PX
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
 
@@ -62,7 +63,7 @@ class DebuggingModule(GazePointerModule):
             self.projection_str = (
                 f"Physical: x: {x_m} y: {y_m} Projection: x: {x_px}, y: {y_px}"
             )
-            self.display_point(x_px, y_px)
+            self.move_mouse_to(x_px, y_px)
 
         elif input_data.header == "screen":
             pass  # TODO
@@ -125,5 +126,5 @@ class DebuggingModule(GazePointerModule):
         cv2.imshow("Video Feed", frame)
         cv2.waitKey(1)
 
-    def display_point(self, x_px: int, y_px: int) -> None:
-        """Display the gaze point on the screen"""
+    def move_mouse_to(self, x, y):
+        mouse.move(x, y)

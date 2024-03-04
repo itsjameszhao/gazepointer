@@ -1,16 +1,16 @@
 from copy import copy
 from typing import Optional
 
-from gazepointer.config import ALPHA
+from gazepointer.config import ALPHA, ALPHA_2D
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
 
 
-class KalmanModule(GazePointerModule):
+class Kalman3DModule(GazePointerModule):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.alpha = ALPHA
+        self.alpha = ALPHA_2D
         self.smooth_angle_x = 0
         self.smooth_angle_y = 0
         self.smooth_angle_z = 0
