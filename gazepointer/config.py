@@ -10,7 +10,11 @@ FRAME_RATE = (
 
 # Controls the smoothing factor of the Exponential Moving Average filter.
 # The lower the value, the more smoothing is applied.
-ALPHA = 0.3
+# First filter, for smoothing the 3d x y z roll pitch yaw
+ALPHA_3D = 0.3
+
+# Second filter, for smoothing the 2d x_px y_px points
+ALPHA_2D = 0.3
 
 # Angle Bias, for offsetting viewing angle. In radians.
 # This is a temporary fix TODO

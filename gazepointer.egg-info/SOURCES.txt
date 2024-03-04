@@ -7,7 +7,8 @@ gazepointer/data_message.py
 gazepointer/debugging_module.py
 gazepointer/dlib_keypoints.py
 gazepointer/gazepointer_module.py
-gazepointer/kalman_module.py
+gazepointer/kalman2d_module.py
+gazepointer/kalman3d_module.py
 gazepointer/keypoint_module.py
 gazepointer/multiplexing.py
 gazepointer/pnp_module.py

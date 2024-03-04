@@ -2,7 +2,7 @@ import queue
 import unittest
 
 from gazepointer.debugging_module import DebuggingModule
-from gazepointer.kalman_module import Kalman3DModule
+from gazepointer.kalman2d_module import Kalman3DModule
 from gazepointer.keypoint_module import KeypointModule
 from gazepointer.multiplexing import QueueAggregator, QueueSplitter
 from gazepointer.pnp_module import PnPModule
@@ -50,7 +50,7 @@ class TestPnP(unittest.TestCase):
             input_queue=self.kalman_output_queue,
             output_queues=[self.kalman_intermediate_queue, self.projection_input_queue],
         )
-        self.kalman_module = Kalman3DModule(
+        self.kalman3d_module = Kalman3DModule(
             input_queue=self.kalman_input_queue, output_queue=self.kalman_output_queue
         )
 
@@ -78,7 +78,7 @@ class TestPnP(unittest.TestCase):
             self.keypoint_output_splitter.start()
             self.pnp_module.start()
             self.pnp_output_splitter.start()
-            self.kalman_module.start()
+            self.kalman3d_module.start()
             self.kalman_output_splitter.start()
             self.projection_module.start()
 
@@ -89,7 +89,7 @@ class TestPnP(unittest.TestCase):
             self.debug_input_aggregator.stop()
             self.projection_module.stop()
             self.kalman_output_splitter.stop()
-            self.kalman_module.stop()
+            self.kalman3d_module.stop()
             self.pnp_output_splitter.stop()
             self.pnp_module.stop()
             self.keypoint_output_splitter.stop()

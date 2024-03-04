@@ -5,7 +5,7 @@ from typing import Optional
 import cv2
 import mouse
 
-from gazepointer.config import PRINT_INTERVAL, SCREEN_HEIGHT_PX, SCREEN_WIDTH_PX
+from gazepointer.config import PRINT_INTERVAL
 from gazepointer.data_message import Data
 from gazepointer.gazepointer_module import GazePointerModule
 
@@ -108,20 +108,20 @@ class DebuggingModule(GazePointerModule):
         for i, (x, y) in enumerate(face_2d):
             # Draw a circle at each point
             # Assuming you want to complete the color as green with full fill
-            cv2.circle(frame, (int(x), int(y)), 3, (0, 255, 0), -1)
+            cv2.circle(frame, (int(x), int(y)), 1, (0, 255, 0), -1)
 
             # Display the index 'i' near each point
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(
-                frame,
-                str(i),
-                (int(x) + 5, int(y) - 5),
-                font,
-                0.5,
-                (255, 255, 255),
-                1,
-                cv2.LINE_AA,
-            )
+            cv2.FONT_HERSHEY_SIMPLEX
+            # cv2.putText(
+            #     frame,
+            #     str(i),
+            #     (int(x) + 5, int(y) - 5),
+            #     font,
+            #     0.5,
+            #     (255, 255, 255),
+            #     1,
+            #     cv2.LINE_AA,
+            # )
 
         cv2.imshow("Video Feed", frame)
         cv2.waitKey(1)
