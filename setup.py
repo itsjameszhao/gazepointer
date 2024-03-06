@@ -12,6 +12,6 @@ setup(
         "mediapipe",
         "screeninfo",
         "pyautogui",
-        "mouse",
+        "mouse @ git+https://github.com/boppreh/mouse.git",
     ],
 )
